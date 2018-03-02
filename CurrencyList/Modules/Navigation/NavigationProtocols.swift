@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - Wireframe
 
-protocol NavigationWireframeProtocol: class {
+protocol NavigationWireframeProtocol: NavigationInput {
 
 }
 
@@ -42,7 +42,7 @@ protocol NavigationViewProtocol: class {
 // MARK: - IO
 
 protocol NavigationInput: class {
-    
+    func showCurrencyList()
 }
 
 protocol NavigationOutput: class {

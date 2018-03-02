@@ -9,7 +9,7 @@
 
 import UIKit
 
-final class NavigationViewController: UIViewController, NavigationViewProtocol {
+final class NavigationViewController: UINavigationController, NavigationViewProtocol {
 
 	var presenter: NavigationViewPresenter!
 

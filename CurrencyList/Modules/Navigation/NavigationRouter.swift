@@ -11,10 +11,10 @@ import UIKit
 
 final class NavigationRouter: NavigationWireframeProtocol {
     
-    fileprivate weak var view: (UIViewController & NavigationViewProtocol)?
+    fileprivate weak var view: (UINavigationController & NavigationViewProtocol)?
     
-    static func createModule(output: NavigationOutput? = nil) throws -> ViperModule<UIViewController, NavigationIO> {
-        let view = NavigationViewController(nibName: nil, bundle: nil)
+    static func createModule(output: NavigationOutput? = nil) throws -> ViperModule<UINavigationController, NavigationIO> {
+        let view = NavigationViewController()
         let interactor = NavigationInteractor()
         let router = NavigationRouter()
         let presenter = NavigationPresenter(view: view, interactor: interactor, router: router)
@@ -25,5 +25,15 @@ final class NavigationRouter: NavigationWireframeProtocol {
         presenter.output = output
         
         return ViperModule(view: view, input: presenter)
+    }
+    
+    func showCurrencyList() {
+        do  {
+            let module = try CurrencyListRouter.createModule()
+            view?.setViewControllers([module.view], animated:false)
+        }
+        catch let error {
+             print("\(#function): \(error)")
+        }
     }
 }

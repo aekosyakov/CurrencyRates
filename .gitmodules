@@ -1,0 +1,3 @@
+[submodule "Result"]
+	path = Result
+	url = git@github.com:aekosyakov/Result.git

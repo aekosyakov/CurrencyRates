@@ -36,4 +36,7 @@ extension NavigationPresenter: NavigationInteractorPresenter {
 
 extension NavigationPresenter: NavigationIO {
     
+    func showCurrencyList() {
+        router.showCurrencyList()
+    }
 }

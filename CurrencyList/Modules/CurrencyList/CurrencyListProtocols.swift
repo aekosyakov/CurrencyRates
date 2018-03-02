@@ -19,6 +19,9 @@ protocol CurrencyListWireframeProtocol: class {
 
 protocol CurrencyListViewPresenter: class {
     func viewLoaded()
+    func currencyItem(at index: Int) -> CurrencyItem?
+    func numberOfItems() -> Int
+    func didSelectCurrencyItem(at index: Int)
 }
 
 protocol CurrencyListInteractorPresenter: class {

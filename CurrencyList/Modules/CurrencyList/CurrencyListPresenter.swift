@@ -16,7 +16,9 @@ final class CurrencyListPresenter {
     fileprivate let router: CurrencyListWireframeProtocol
     
     weak var output: CurrencyListOutput?
-
+    
+    var currencies:[CurrencyItem] = []
+    
     init(view: CurrencyListViewProtocol, interactor: CurrencyListInteractorProtocol, router: CurrencyListWireframeProtocol) {
         self.view = view
         self.interactor = interactor
@@ -27,6 +29,21 @@ final class CurrencyListPresenter {
 extension CurrencyListPresenter: CurrencyListViewPresenter {
     func viewLoaded() {
         view?.title = "CurrencyList"
+    }
+    
+    func currencyItem(at index: Int) -> CurrencyItem? {
+        let currencyItem = CurrencyItem()
+        currencyItem.rate = 1.23
+        currencyItem.identifier = "EUR"
+        return currencyItem
+    }
+    
+    func didSelectCurrencyItem(at index: Int) {
+        
+    }
+    
+    func numberOfItems() -> Int {
+        return 3
     }
 }
 
