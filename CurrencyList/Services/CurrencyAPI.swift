@@ -12,12 +12,27 @@ import Result
 public protocol Currency {
     var identifier:String? { get set }
     var rate: Float? { get set }
+    var count: Float? { get set }
+    var selected: Bool { get set }
 }
 
 public enum CurrencyError: Error {
     case failedToComplete
+    case failedToParseResponse
 }
 
-public protocol CurrencyRates {
-    func loadRates(_ completion: @escaping (Result <[Currency], CurrencyError>) -> Void)
+public protocol RatesResponse {
+    var rates:[String: Float] { get }
+    var baseID: String { get }
+    var currencies:[String] { get }
+    
+    init(json:[String : Any])
+}
+
+
+public typealias ResultCompletion = (Result <RatesResponse, CurrencyError>) -> Void
+
+public protocol CurrencyRatesAPI: class {
+    func startUpdateRates(every sec:Float, completion: @escaping ResultCompletion)
+    func stopUpdateRates()
 }

@@ -20,7 +20,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7b5-1q-y0s">
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7b5-1q-y0s">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <connections>
@@ -31,12 +31,13 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="7b5-1q-y0s" secondAttribute="trailing" id="5uZ-vE-JGv"/>
-                <constraint firstItem="7b5-1q-y0s" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="MLr-eC-x4a"/>
-                <constraint firstItem="7b5-1q-y0s" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Vmf-pz-bGF"/>
-                <constraint firstAttribute="bottom" secondItem="7b5-1q-y0s" secondAttribute="bottom" id="k0z-11-6qc"/>
+                <constraint firstAttribute="trailing" secondItem="7b5-1q-y0s" secondAttribute="trailing" id="1bp-Gi-eYd"/>
+                <constraint firstItem="7b5-1q-y0s" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="OZ0-Hh-w53"/>
+                <constraint firstAttribute="bottom" secondItem="7b5-1q-y0s" secondAttribute="bottom" id="OqL-Q2-hIk"/>
+                <constraint firstItem="7b5-1q-y0s" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="cfd-uO-AZs"/>
             </constraints>
-            <point key="canvasLocation" x="84.5" y="53.5"/>
+            <nil key="simulatedTopBarMetrics"/>
+            <point key="canvasLocation" x="55" y="54"/>
         </view>
     </objects>
 </document>

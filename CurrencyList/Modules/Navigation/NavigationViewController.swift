@@ -13,9 +13,19 @@ final class NavigationViewController: UINavigationController, NavigationViewProt
 
 	var presenter: NavigationViewPresenter!
 
+    
 	override func viewDidLoad() {
         super.viewDidLoad()
+        navigationBar.useCustomStyle()
         presenter.viewLoaded()
     }
 
+}
+
+extension UINavigationBar {
+    func useCustomStyle() {
+        isOpaque = true
+        isTranslucent = false
+        tintColor = .white
+    }
 }

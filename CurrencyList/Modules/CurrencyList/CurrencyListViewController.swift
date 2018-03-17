@@ -13,22 +13,26 @@ final class CurrencyListViewController: UIViewController, CurrencyListViewProtoc
     @IBOutlet weak var tableView: UITableView!
     
 	var presenter: CurrencyListViewPresenter!
-    
-    fileprivate enum CellConsts {
-        static let CurrencyCellID = "CurrencyItemTableViewCell"
-    }
 
 	override func viewDidLoad() {
         super.viewDidLoad()
         presenter.viewLoaded()
-        tableView.register(CurrencyItemTableViewCell.self, forCellReuseIdentifier: CellConsts.CurrencyCellID)
+        setupView()
     }
-
+    
+    func setupView() {
+        view.layoutIfNeeded()
+        tableView.delegate = self
+        tableView.keyboardDismissMode = .onDrag
+        tableView.showsVerticalScrollIndicator = false
+        
+        if #available(iOS 11.0, *) {
+            tableView.contentInsetAdjustmentBehavior = .never
+        }
+    }
 }
 
 // MARK: - UITableView
-
-
 extension CurrencyListViewController: UITableViewDataSource {
 
     
@@ -37,20 +41,11 @@ extension CurrencyListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: CellConsts.CurrencyCellID, for: indexPath) as! CurrencyItemTableViewCell
-        let item = presenter.currencyItem(at: indexPath.row)
-        
-       // cell.setupCustomContent
-        
-      //  let track = currencies[indexPath.row]
-      //  cell.configure(track: track, downloaded: track.downloaded)
-        
-        return cell
+        return presenter.configureCell(at: indexPath)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 62.0
+        return presenter.cellHeight(at: indexPath)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -58,9 +53,15 @@ extension CurrencyListViewController: UITableViewDataSource {
     }
 }
 
+extension CurrencyListViewController: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        presenter.didDeselectCurrencyItem()
+    }
+}
+
 extension CurrencyListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //let currency = presenter.currencyItem(at: indexPath.row)
-        presenter.didSelectCurrencyItem(at: indexPath.row)
+        presenter.didSelectCurrencyItem(at: indexPath)
     }
+    
 }
