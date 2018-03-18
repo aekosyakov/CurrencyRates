@@ -11,10 +11,10 @@ import UIKit
 import Result
 import Reachability
 
-final class CurrencyListInteractor: CurrencyListInteractorProtocol {
+final class CurrencyListInteractor: CurrencyListInteractorProtocol {    
     weak var presenter: CurrencyListInteractorPresenter?
     
-    private var ratesService: CLRatesApi
+    private var updateService: CurrencyUpdateAPI
     private var baseID = "EUR"
     
     private var rates:[String : Float] = [:]
@@ -23,8 +23,8 @@ final class CurrencyListInteractor: CurrencyListInteractorProtocol {
     
     fileprivate let reachability = Reachability()!
 
-    init(currencyService: CLRatesApi) {
-        self.ratesService = currencyService
+    init(updateService: CurrencyUpdateAPI) {
+        self.updateService = updateService
     }
     
     
@@ -81,7 +81,7 @@ final class CurrencyListInteractor: CurrencyListInteractorProtocol {
     }
     
     func updateCurrencyItems(_ completion:@escaping ((CurrencyError?)-> ())) {
-        ratesService.startUpdateRates(every: 1) { (result) in
+        updateService.startUpdateRates(every: 1) { (result) in
             switch result {
             case .success(let data):
                 self.handleResponse(data, completion: {
@@ -101,7 +101,7 @@ final class CurrencyListInteractor: CurrencyListInteractorProtocol {
     }
     
     func stopUpdatingCurrencyItems() {
-        ratesService.stopUpdateRates()
+        updateService.stopUpdateRates()
     }
     
     func addCurrencyItemToTop(from index: Int) {
@@ -113,7 +113,7 @@ final class CurrencyListInteractor: CurrencyListInteractorProtocol {
 
 
 extension CurrencyListInteractor {
-    func handleResponse(_ data:CLResponseData, completion:(()->())) {
+    func handleResponse(_ data:RatesResponse, completion:(()->())) {
         
         let initialResponse = rates.count == 0
         

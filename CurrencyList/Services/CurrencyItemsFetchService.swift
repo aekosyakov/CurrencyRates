@@ -8,7 +8,6 @@
 
 import UIKit
 import Result
-import Repeat
 
 struct CurrencyItem: Currency {
     var count: Float?
@@ -17,7 +16,7 @@ struct CurrencyItem: Currency {
     var selected: Bool = false
 }
 
-struct RatesResponse:CLResponseData {
+struct CurrencyResponse:RatesResponse {
     var rates:[String: Float] = [:]
     var baseID: String = "EUR"
     var currencies:[String] = []
@@ -32,33 +31,21 @@ struct RatesResponse:CLResponseData {
     }
 }
 
-extension CLRatesService {
-    func startUpdateRates(every sec:Float, completion: @escaping ResultCompletion) {
-        guard let timer = timer else {
-            self.timer = Repeater.every(.seconds(Double(sec))) { _ in
-                self.loadRates(completion)
-            }
-            return
-        }
-        timer.start()
-    }
-    
-    func stopUpdateRates() {
-        timer?.pause()
-    }
-}
 
-
-class CLRatesService: CLRatesApi {
+class CurrencyItemsFetchService: CurrencyRatesAPI {
     let session = URLSession(configuration: .default)
     var task: URLSessionTask? = nil
-    var timer: Repeater?
     
-    func loadRates(_ completion: @escaping ResultCompletion) {
-        guard let url = URL.init(string: "https://revolut.duckdns.org/latest?base=EUR") else {
-            return;
+    
+    private enum URLConsts {
+        static let revolutURL = "https://revolut.duckdns.org/latest"
+    }
+    
+    func loadRates(base currency:String, completion: @escaping ResultCompletion) {
+        guard let url = URL.init(string: URLConsts.revolutURL + "?base=\(currency)") else {
+            completion(.failure(.requestFailed))
+            return
         }
-
         task = session.dataTask(with: url) { data, response, error in
             if let error = error {
                 
@@ -74,10 +61,11 @@ class CLRatesService: CLRatesApi {
                 completion(.failure(.requestFailed))
                 return
             }
-
-            completion(.success(RatesResponse(json: json)))
+            
+            completion(.success(CurrencyResponse(json: json)))
         }
         task?.resume()
-        
     }
+
 }
+
