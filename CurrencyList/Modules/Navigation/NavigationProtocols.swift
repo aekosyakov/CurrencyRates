@@ -43,6 +43,8 @@ protocol NavigationViewProtocol: class {
 
 protocol NavigationInput: class {
     func showCurrencyList()
+    func showLoader()
+    func hideLoader() 
 }
 
 protocol NavigationOutput: class {

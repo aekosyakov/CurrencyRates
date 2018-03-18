@@ -26,7 +26,7 @@ final class NavigationPresenter {
 
 extension NavigationPresenter: NavigationViewPresenter {
     func viewLoaded() {
-        view?.title = "Navigation"
+        view?.title = ""
     }
 }
 
@@ -38,5 +38,13 @@ extension NavigationPresenter: NavigationIO {
     
     func showCurrencyList() {
         router.showCurrencyList()
+    }
+    
+    func showLoader() {
+        router.showLoader()
+    }
+    
+    func hideLoader() {
+        router.hideLoader()
     }
 }

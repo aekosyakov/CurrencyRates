@@ -21,14 +21,16 @@ protocol CurrencyListWireframeProtocol: class {
 protocol CurrencyListViewPresenter: class {
     func viewLoaded()
     func numberOfItems() -> Int
-    func didSelectCurrencyItem(at indexPath: IndexPath)
-    func didDeselectCurrencyItem()
-    func configureCell(at indexPath: IndexPath) -> UITableViewCell
-    func cellHeight(at indexPath:IndexPath) -> CGFloat
+    func selectItem(at indexPath: IndexPath)
+    func deselectItem(at indexPath: IndexPath)
+    func item(at indexPath:IndexPath) -> Currency?
+    func cellTextFieldDidStartEditing(_ textField: UITextField)
 }
 
 protocol CurrencyListInteractorPresenter: class {
-    
+    func show(error: CurrencyError)
+    func hideError()
+    func hideLoader()
 }
 
 typealias CurrencyListPresenterProtocol = CurrencyListViewPresenter & CurrencyListInteractorPresenter
@@ -39,7 +41,7 @@ protocol CurrencyListInteractorProtocol: class {
     var itemsCount:Int { get }
     func currencyItem(at index:Int, editMode: Bool) -> Currency?
     func editSelectedItemCount(_ count: Float)
-    func updateCurrencyItems(_ completion:@escaping ((NSError?)-> ()))
+    func updateCurrencyItems(_ completion:@escaping ((CurrencyError?)-> ()))
     func addCurrencyItemToTop(from index: Int)
     func stopUpdatingCurrencyItems()
 }
@@ -48,7 +50,9 @@ protocol CurrencyListInteractorProtocol: class {
 
 protocol CurrencyListViewProtocol: class {
     var title: String? { set get }
-    var tableView: UITableView! { get}
+    func moveRowToTop(from indexPath:IndexPath)
+    func reloadVisibleRows()
+    func insertNewRows()
 }
 
 // MARK: - IO
@@ -58,7 +62,10 @@ protocol CurrencyListInput: class {
 }
 
 protocol CurrencyListOutput: class {
-    
+    func showLoaderPlaceholder(input: CurrencyListInput)
+    func showErrorPlaceholder(error:CurrencyError, input: CurrencyListInput)
+    func hideErrorPlaceholder(input: CurrencyListInput)
+    func hideLoaderPlaceholder(input: CurrencyListInput)
 }
 
 protocol CurrencyListIO: CurrencyListInput {
@@ -69,6 +76,12 @@ public enum EditingState: Int {
     case shouldBeginEdining, didStartEditing
 }
 
-protocol CurrencyCellProtocol {
-    var didStartEditing: ((UITextField) -> ())? { set get }
+enum PlaceholderType {
+    case error(CurrencyError), loader
+}
+
+typealias PlaceholderData = (text: String, icon: String?)
+
+protocol CurrencyCellProtocol: class {
+    func reload(with itemViewModel:CurrencyItemViewModel)
 }

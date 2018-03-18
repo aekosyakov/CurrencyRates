@@ -15,7 +15,7 @@ final class CurrencyListRouter: CurrencyListWireframeProtocol {
     
     static func createModule(output: CurrencyListOutput? = nil) throws -> ViperModule<UIViewController, CurrencyListIO> {
         let view = CurrencyListViewController(nibName: nil, bundle: nil)
-        let interactor = CurrencyListInteractor(currencyService: CurrencyService())
+        let interactor = CurrencyListInteractor(currencyService: CLRatesService())
         let router = CurrencyListRouter()
         let presenter = CurrencyListPresenter(view: view, interactor: interactor, router: router)
         
@@ -26,7 +26,4 @@ final class CurrencyListRouter: CurrencyListWireframeProtocol {
         
         return ViperModule(view: view, input: presenter)
     }
-    
 }
-
-

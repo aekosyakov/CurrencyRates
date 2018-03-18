@@ -18,10 +18,6 @@ final class CurrencyListPresenter {
     weak var output: CurrencyListOutput?
     private var editMode:Bool = false
     
-    fileprivate enum CellConsts {
-        static let CurrencyCellID = "CurrencyItemTableViewCell"
-    }
-    
     init(view: CurrencyListViewProtocol, interactor: CurrencyListInteractorProtocol, router: CurrencyListWireframeProtocol) {
         self.view = view
         self.interactor = interactor
@@ -31,10 +27,9 @@ final class CurrencyListPresenter {
 
 extension CurrencyListPresenter: CurrencyListViewPresenter {
     
+    
     func viewLoaded() {
-        view?.title = "CurrencyList"
-        view?.tableView.register(UINib.init(nibName: CellConsts.CurrencyCellID, bundle: nil), forCellReuseIdentifier: CellConsts.CurrencyCellID)
-        
+        view?.title = "Currency List"
         NotificationCenter.default.addObserver(forName: .UIApplicationDidBecomeActive, object: nil, queue: OperationQueue.main) { _ in
             self.startUpdates()
         }
@@ -42,140 +37,106 @@ extension CurrencyListPresenter: CurrencyListViewPresenter {
         NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: OperationQueue.main) { _ in
             self.stopUpdates()
         }
+        startUpdates()
     }
+    
     
     //MARK: - Public API
-    func currencyCell(at indexPath: IndexPath) -> CurrencyItemTableViewCell {
-        return view.tableView.dequeueReusableCell(withIdentifier: CellConsts.CurrencyCellID, for: indexPath) as! CurrencyItemTableViewCell
+    func item(at indexPath:IndexPath) -> Currency? {
+        return interactor.currencyItem(at: indexPath.row, editMode: editMode)
     }
     
-    func configureCell(at indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = currencyCell(at: indexPath)
-        cell.didStartEditing = cellTextFieldDidStartEditing
-        
-        if let item = interactor.currencyItem(at: indexPath.row, editMode: editMode) {
-            cell.reload(with:item)
-        }
-        return cell
-    }
-    
-    func didSelectCurrencyItem(at indexPath: IndexPath) {
+    func selectItem(at indexPath: IndexPath) {
         let index = indexPath.row
-        
+    
         editMode = true
         
-        print(index)
         guard index != 0 else {
-            reloadCells()
+            reloadRows()
             return
         }
         
         interactor.addCurrencyItemToTop(from: index)
         
         DispatchQueue.main.async {
-//            if let cell = self.view.tableView.cellForRow(at: indexPath) as? CurrencyItemTableViewCell, let item = self.interactor.currencyItem(at: indexPath.row, editMode: self.editMode) {
-//                cell.reload(with:item)
-//            }
-            self.view.tableView.moveRowToTop(from: indexPath)
-            self.reloadCells()
+            self.view.moveRowToTop(from: indexPath)
+            self.view.reloadVisibleRows()
+            
         }
     }
     
-    func didDeselectCurrencyItem() {
-        editMode = false
-        DispatchQueue.main.async {
-            self.reloadCells()
-        }
+    func deselectItem(at indexPath: IndexPath) {
+        deselectItems()
     }
     
     func numberOfItems() -> Int {
         return interactor.itemsCount
     }
     
-    func cellHeight(at indexPath:IndexPath) -> CGFloat {
-        return 100
+    func cellTextFieldDidStartEditing(_ textField: UITextField) {
+        if let text = textField.text {
+            interactor.editSelectedItemCount(Float(text) ?? 0)
+            reloadRows()
+        }
     }
+    
     
     //MARK: - Private API
     private func startUpdates() {
-        print("start updates")
+        if self.interactor.itemsCount == 0 {
+            self.showLoader()
+        }
         interactor.updateCurrencyItems { error in
+            self.hideLoader()
+            
             if let error = error {
-                self.handle(error: error)
-            } else {
-                DispatchQueue.main.async {
-                    let numberOfItems = self.view.tableView.numberOfRows(inSection: 0)
-                    if numberOfItems == 0 {
-                        self.view.tableView.reloadData()
-                    }
-                    self.reloadCells()
-                }
+                self.show(error: error)
+                return
             }
+            
+            self.hideError()
+            self.reloadRows()
         }
     }
+
     
     private func stopUpdates() {
-        self.interactor.stopUpdatingCurrencyItems()
-    }
-    
-    private func handle(error: NSError) {
-        print("error\(error.localizedDescription)")
+        interactor.stopUpdatingCurrencyItems()
     }
     
     
-    private func cellTextFieldDidStartEditing(_ textField: UITextField) {
-        if let text = textField.text, let floatValue = Float(text) {
-            interactor.editSelectedItemCount(floatValue)
-            DispatchQueue.main.async {
-                self.reloadCells()
-            }
-        }
+    private func deselectItems() {
+        editMode = false
+        reloadRows()
     }
     
-    private func reloadCells() {
-        self.view.tableView.visibleCells.forEach { (cell) in
-            let visibleIndexPath = self.view.tableView.indexPath(for: cell)
-            if let item = interactor.currencyItem(at: (visibleIndexPath?.row)!, editMode: editMode){
-                (cell as? CurrencyItemTableViewCell)!.reload(with: item)
-            }
+    private func reloadRows() {
+        DispatchQueue.main.async {
+            self.view.reloadVisibleRows()
         }
     }
 }
 
 extension CurrencyListPresenter: CurrencyListInteractorPresenter {
     
+    func show(error: CurrencyError) {        
+        output?.showErrorPlaceholder(error: error, input: self)
+    }
+    
+    func hideError() {
+        output?.hideErrorPlaceholder(input: self)
+    }
+    
+    func showLoader() {
+        output?.showLoaderPlaceholder(input: self)
+    }
+    
+    func hideLoader() {
+        output?.hideLoaderPlaceholder(input: self)
+    }
 }
 
 extension CurrencyListPresenter: CurrencyListIO {
     
 }
 
-public extension String {
-    public func toFloat() -> Float? {
-        return Float.init(self)
-    }
-    
-    public func toDouble() -> Double? {
-        return Double.init(self)
-    }
-    
-    public func toInt() -> Int? {
-        return Int.init(self)
-    }
-}
-
-public extension UITableView {
-    func moveRowToTop(from indexPath:IndexPath) {
-        beginUpdates()
-        moveRow(at: indexPath, to: IndexPath(row:0, section:0))
-        endUpdates()
-        scrollToRow(at: IndexPath(row:0, section:0), at: .top, animated: false)
-    }
-}
-
-public extension IndexPath {
-    static func first() -> IndexPath {
-        return IndexPath(row:0, section:0)
-    }
-}

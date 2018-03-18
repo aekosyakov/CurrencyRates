@@ -8,20 +8,23 @@
 //
 
 import UIKit
+import Result
+import Reachability
 
 final class CurrencyListInteractor: CurrencyListInteractorProtocol {
     weak var presenter: CurrencyListInteractorPresenter?
     
-    private var currencyService: CurrencyRatesAPI
-    
+    private var ratesService: CLRatesApi
+    private var baseID = "EUR"
     
     private var rates:[String : Float] = [:]
     private var currencies:[String] = []
     private var counts:[String : Float] = [:]
-    private var baseID = "EUR"
     
-    init(currencyService: CurrencyRatesAPI) {
-        self.currencyService = currencyService
+    fileprivate let reachability = Reachability()!
+
+    init(currencyService: CLRatesApi) {
+        self.ratesService = currencyService
     }
     
     
@@ -36,11 +39,11 @@ final class CurrencyListInteractor: CurrencyListInteractorProtocol {
         let itemID = currencies[index]
         let itemRate = rates[itemID] ?? 0
         
-        var currencyItem = CurrencyItem()
-        currencyItem.identifier = itemID
-        currencyItem.rate = itemRate
+        var newItem = CurrencyItem()
+        newItem.identifier = itemID
+        newItem.rate = itemRate
         
-        currencyItem.selected = (index == 0) && editMode
+        newItem.selected = (index == 0) && editMode
         
         let currentBaseID = editMode ? currencies.first : self.baseID
         let editCount = counts[currentBaseID!] ?? 0
@@ -49,30 +52,25 @@ final class CurrencyListInteractor: CurrencyListInteractorProtocol {
         
         guard editCount != 0 else {
             counts[itemID] = 0
-            currencyItem.count = 0
-            return currencyItem
+            newItem.count = 0
+            return newItem
         }
         
-        let baseIDCount = Float(editCount/editRate)
-        print("edit count \(editCount), editRate \(editRate)")
-        
+        let baseIDCount = Float(editCount/editRate)        
         var newCount:Float = 0
         if index == 0 {
             newCount = counts[itemID] ?? 0
         } else {
             if itemID == currentBaseID {
                 newCount = baseIDCount
-                
             } else {
                 newCount = Float(baseIDCount*itemRate)
             }
         }
+
         counts[itemID] = newCount
-        
-        currencyItem.count = counts[itemID] ?? 0
-        
-        
-        return currencyItem
+        newItem.count = counts[itemID] ?? 0
+        return newItem
     }
     
     func editSelectedItemCount(_ count: Float) {
@@ -82,45 +80,68 @@ final class CurrencyListInteractor: CurrencyListInteractorProtocol {
         counts[itemID] = count
     }
     
-    func updateCurrencyItems(_ completion:@escaping ((NSError?)-> ())) {
-        currencyService.startUpdateRates(every: 1) { (result) in
+    func updateCurrencyItems(_ completion:@escaping ((CurrencyError?)-> ())) {
+        ratesService.startUpdateRates(every: 1) { (result) in
             switch result {
-            case .success(let ratesData):
-                self.rates = ratesData.rates
-                self.baseID = ratesData.baseID
-                
-                Array(self.rates.keys).forEach({ (string) in
-                    if self.currencies.contains(string) == false {
-                        self.currencies.append(string)
-                    }
+            case .success(let data):
+                self.handleResponse(data, completion: {
+                    completion(nil)
                 })
-                
-                if self.counts.keys.contains(self.baseID) == false {
-                    self.counts[self.baseID] = 100
-                }
-                
-                if self.rates.keys.contains(self.baseID) == false {
-                    self.rates[self.baseID] = 1
-                }
-                
-                if self.currencies.contains(self.baseID) == false {
-                    self.currencies.insert(self.baseID, at: 0)
-                }
-                
-                completion(nil)
             case .failure(let error):
-                completion(error as NSError)
+                switch self.reachability.connection {
+                case .none:
+                    completion(.connectionLost)
+                    return
+                default:
+                    break
+                }
+                completion(error)
             }
         }
     }
     
     func stopUpdatingCurrencyItems() {
-        currencyService.stopUpdateRates()
+        ratesService.stopUpdateRates()
     }
     
     func addCurrencyItemToTop(from index: Int) {
         let item = self.currencies[index]
         currencies.remove(at: index)
         currencies.insert(item, at: 0)
+    }
+}
+
+
+extension CurrencyListInteractor {
+    func handleResponse(_ data:CLResponseData, completion:(()->())) {
+        
+        let initialResponse = rates.count == 0
+        
+        rates = data.rates
+        baseID = data.baseID
+        
+        Array(rates.keys).forEach({ (string) in
+            if currencies.contains(string) == false {
+                currencies.append(string)
+            }
+        })
+        
+        if counts.keys.contains(baseID) == false {
+            counts[baseID] = 100
+        }
+        
+        if rates.keys.contains(baseID) == false {
+            rates[baseID] = 1
+        }
+        
+        if currencies.contains(baseID) == false {
+            currencies.insert(baseID, at: 0)
+        }
+        
+        if (initialResponse) {
+            presenter?.hideLoader()
+        }
+        
+        completion()
     }
 }

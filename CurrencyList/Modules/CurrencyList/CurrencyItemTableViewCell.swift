@@ -8,19 +8,17 @@
 
 import UIKit
 
-class CurrencyItemTableViewCell: UITableViewCell, CurrencyCellProtocol {
-    var didStartEditing: ((UITextField) -> ())?
-    let serialQueue: OperationQueue = OperationQueue()
-    
+class CurrencyItemTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel?
     @IBOutlet weak var rateLabel: UILabel?
-    @IBOutlet weak var titleImageView: UIImageView?
     @IBOutlet weak var textField: UITextField?
-    private var currencyItem: Currency?
+    
+    var didStartEditing: ((UITextField) -> ())?
+    
+    private let serialQueue: OperationQueue = OperationQueue()
+    private var itemViewModel: CurrencyItemViewModel?
     
     override func awakeFromNib() {
-        backgroundColor = .white
-        contentView.backgroundColor = .white
         textField?.keyboardType = .numberPad
         textField?.delegate = self
         textField?.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
@@ -28,56 +26,57 @@ class CurrencyItemTableViewCell: UITableViewCell, CurrencyCellProtocol {
         serialQueue.maxConcurrentOperationCount = 1
     }
     
-    func reload(with item: Currency) {
-        currencyItem = item
-        updateUI()
-    }
-    
     func updateUI() {
         serialQueue.cancelAllOperations()
-        guard let item = currencyItem else {
+        guard let viewModel = itemViewModel else {
             return
         }
         let operation = BlockOperation()
         operation.addExecutionBlock {
             DispatchQueue.main.async {
-                if let uid = item.identifier {
-                    self.titleLabel?.text = uid
-                }
-                
-                if let count = item.count, item.count != 0 {
-                    if item.selected == false || self.textField?.isFirstResponder == false {
-                        self.textField?.text =  count.isInt ?  String(format: "%.f", count) :  String(format: "%.2f", count)
-                    }
-                }
-                else {
-                    self.textField?.text = nil
-                }
+                let isEditing = self.textField?.isFirstResponder ?? false
+                self.titleLabel?.text = viewModel.itemIDText() ?? nil
+                let existedText = self.textField?.text ?? nil
 
-                if item.selected == true {
-                    self.startEditing()
-                } else {
-                    self.endEditing()
-                }
+                self.textField?.text = viewModel.itemCountText(isEditing: isEditing) ??  (isEditing ? existedText : nil)
+                self.textField?.textColor = viewModel.countColor(isEditing:isEditing, oldText:existedText)
+                self.showKeyboard(viewModel.shouldOpenKeyboard())
             }
         }
         serialQueue.addOperation(operation)
+        
     }
     
-    public func startEditing() {
+   
+}
+
+extension CurrencyItemTableViewCell: CurrencyCellProtocol {
+    func reload(with itemViewModel:CurrencyItemViewModel) {
+        self.itemViewModel = itemViewModel
+        updateUI()
+    }
+}
+
+extension CurrencyItemTableViewCell {
+    func showKeyboard(_ show:Bool) {
+        show ? startEditing() : endEditing()
+    }
+    
+    private func startEditing() {
         guard textField?.isFirstResponder == false else  {
             return
         }
         textField?.becomeFirstResponder()
     }
     
-    public func endEditing() {
+    private func endEditing() {
         guard textField?.isFirstResponder == true else  {
             return
         }
         textField?.resignFirstResponder()
     }
 }
+
 
 extension CurrencyItemTableViewCell: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
@@ -88,14 +87,9 @@ extension CurrencyItemTableViewCell: UITextFieldDelegate {
     }
     
     @objc func textFieldDidChange(_ textfield:UITextField) {
+        serialQueue.cancelAllOperations()
         if let handler = didStartEditing {
             handler(textfield)
         }
-    }
-}
-
-extension FloatingPoint {
-    var isInt: Bool {
-        return floor(self) == self
     }
 }

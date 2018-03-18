@@ -7,13 +7,8 @@
 //
 
 import UIKit
-import enum Result.Result
+import Result
 import Repeat
-
-
-protocol JSONParsing {
-    func stringValue(for key: String) -> String
-}
 
 struct CurrencyItem: Currency {
     var count: Float?
@@ -22,32 +17,22 @@ struct CurrencyItem: Currency {
     var selected: Bool = false
 }
 
-struct RatesData:RatesResponse {
+struct RatesResponse:CLResponseData {
     var rates:[String: Float] = [:]
     var baseID: String = "EUR"
     var currencies:[String] = []
     
     init(json: [String:Any]) {
-        
-        guard let rates = json["rates"] as? [String: Float], let baseID = json["base"] as? String else {
+        guard let rates  = json["rates"] as? [String: Float],
+              let baseID = json["base"]  as? String else {
             return
         }
         self.rates = rates
         self.baseID = baseID
-//
-//
-//
-//        if self.currencies.count != self.rates.count {
-//            Array(self.rates.keys).forEach({ (string) in
-//                if self.currencies.contains(string) == false {
-//                    self.currencies.append(string)
-//                }
-//            })
-//        }
     }
 }
 
-extension CurrencyService {
+extension CLRatesService {
     func startUpdateRates(every sec:Float, completion: @escaping ResultCompletion) {
         guard let timer = timer else {
             self.timer = Repeater.every(.seconds(Double(sec))) { _ in
@@ -63,7 +48,8 @@ extension CurrencyService {
     }
 }
 
-class CurrencyService: CurrencyRatesAPI {
+
+class CLRatesService: CLRatesApi {
     let session = URLSession(configuration: .default)
     var task: URLSessionTask? = nil
     var timer: Repeater?
@@ -74,23 +60,22 @@ class CurrencyService: CurrencyRatesAPI {
         }
 
         task = session.dataTask(with: url) { data, response, error in
-            print("data received")
-            
-            if let _ = error {
-                completion(.failure(.failedToComplete))
+            if let error = error {
+                
+                completion(.failure(.got(error)))
                 return
             }
             
             guard let data = data else {
-                completion(.failure(.failedToComplete))
+                completion(.failure(.requestFailed))
                 return
             }
             guard let json = (try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: Any] else {
-                completion(.failure(.failedToParseResponse))
+                completion(.failure(.requestFailed))
                 return
             }
 
-            completion(.success(RatesData(json: json)))
+            completion(.success(RatesResponse(json: json)))
         }
         task?.resume()
         

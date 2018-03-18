@@ -1,0 +1,3 @@
+[submodule "Submodules/Reachability.swift"]
+	path = Submodules/Reachability.swift
+	url = git@github.com:ashleymills/Reachability.swift.git

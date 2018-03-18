@@ -17,11 +17,10 @@ public protocol Currency {
 }
 
 public enum CurrencyError: Error {
-    case failedToComplete
-    case failedToParseResponse
+    case unknown, connectionLost, requestFailed, got(Error)
 }
 
-public protocol RatesResponse {
+public protocol CLResponseData {
     var rates:[String: Float] { get }
     var baseID: String { get }
     var currencies:[String] { get }
@@ -30,9 +29,9 @@ public protocol RatesResponse {
 }
 
 
-public typealias ResultCompletion = (Result <RatesResponse, CurrencyError>) -> Void
+public typealias ResultCompletion = (Result <CLResponseData, CurrencyError>) -> Void
 
-public protocol CurrencyRatesAPI: class {
+public protocol CLRatesApi: class {
     func startUpdateRates(every sec:Float, completion: @escaping ResultCompletion)
     func stopUpdateRates()
 }
