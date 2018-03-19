@@ -29,6 +29,10 @@ extension ErrorPlaceholderPresenter: ErrorPlaceholderViewPresenter {
         
         view?.title = "Error"
         view.setErrorText(self.errorText ?? "Some error occured")
+        
+        if let iconName = self.iconName, let image = UIImage(named:iconName) {
+            view.setIcon(image)
+        }
     }
 }
 

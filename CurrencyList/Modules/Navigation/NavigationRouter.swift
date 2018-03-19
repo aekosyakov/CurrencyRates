@@ -30,7 +30,7 @@ final class NavigationRouter: NavigationWireframeProtocol {
         return ViperModule(view: view, input: presenter)
     }
     
-    func presentedController() -> UIViewController? {
+    func activeController() -> UIViewController? {
         return view?.viewControllers.first
     }
 }
@@ -59,9 +59,9 @@ extension NavigationRouter {
 extension NavigationRouter {
     func dismissFirstPresentedControllerIfPossible() {
         if let vc = view?.viewControllers.first, let presentedVC = vc.presentedViewController, let navController = vc.navigationController  {
-            navController.dismiss(animated: false, completion: nil)
             DispatchQueue.main.async {
                 presentedVC.view.runFade()
+                navController.dismiss(animated: false, completion: nil)
             }
         }
     }

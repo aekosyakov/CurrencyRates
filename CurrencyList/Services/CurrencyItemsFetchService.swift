@@ -29,6 +29,10 @@ struct CurrencyResponse:RatesResponse {
         self.rates = rates
         self.baseID = baseID
     }
+    
+    func isValid() -> Bool {
+        return rates.count > 0 && baseID.count > 0
+    }
 }
 
 

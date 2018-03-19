@@ -39,7 +39,7 @@ protocol ErrorPlaceholderInteractorProtocol: class {
 protocol ErrorPlaceholderViewProtocol: class {
     var title: String? { set get }
     func setErrorText(_ text:String)
-    func setIcon(_ image: UIImage)
+    func setIcon(_ image: UIImage?)
 }
 
 // MARK: - IO

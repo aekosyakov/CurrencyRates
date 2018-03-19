@@ -46,6 +46,14 @@ class CurrencyItemViewModel: NSObject {
         return .green
     }
     
+    func separatorColor() -> UIColor {
+        if let count = item.count, count != 0 {
+            return item.selected ? .black : .lightGray
+        }
+        return .lightGray
+    }
+    
+    
     func shouldOpenKeyboard() -> Bool {
         return item.selected
     }

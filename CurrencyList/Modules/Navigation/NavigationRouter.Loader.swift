@@ -14,7 +14,7 @@ extension NavigationRouter {
             return
         }
         do {
-            if let vc = presentedController() {
+            if let vc = activeController(), vc.presentedViewController == nil {
                 let module = try LoaderRouter.createModule()
                 vc.navigationController?.present(customModalNavigationController(root: module.view), animated: false, completion: nil)
                 self.loaderVC = module.view

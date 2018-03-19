@@ -12,7 +12,7 @@ class CurrencyItemTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel?
     @IBOutlet weak var rateLabel: UILabel?
     @IBOutlet weak var textField: UITextField?
-    
+    @IBOutlet weak var countSeparatorView: UIView?
     var didStartEditing: ((UITextField) -> ())?
     
     private let serialQueue: OperationQueue = OperationQueue()
@@ -23,6 +23,7 @@ class CurrencyItemTableViewCell: UITableViewCell {
         textField?.delegate = self
         textField?.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         textField?.placeholder = "0"
+        textField?.tintColor = .black
         serialQueue.maxConcurrentOperationCount = 1
     }
     
@@ -40,6 +41,7 @@ class CurrencyItemTableViewCell: UITableViewCell {
 
                 self.textField?.text = viewModel.itemCountText(isEditing: isEditing) ??  (isEditing ? existedText : nil)
                 self.textField?.textColor = viewModel.countColor(isEditing:isEditing, oldText:existedText)
+                self.countSeparatorView?.backgroundColor = viewModel.separatorColor()
                 self.showKeyboard(viewModel.shouldOpenKeyboard())
             }
         }
@@ -63,17 +65,21 @@ extension CurrencyItemTableViewCell {
     }
     
     private func startEditing() {
-        guard textField?.isFirstResponder == false else  {
+        guard let textField = textField, textField.isFirstResponder == false else {
             return
         }
-        textField?.becomeFirstResponder()
+        DispatchQueue.main.async {
+            textField.becomeFirstResponder()
+        }
     }
     
     private func endEditing() {
-        guard textField?.isFirstResponder == true else  {
+        guard let textField = textField, textField.isFirstResponder == false else {
             return
         }
-        textField?.resignFirstResponder()
+        DispatchQueue.main.async {
+            textField.resignFirstResponder()
+        }
     }
 }
 

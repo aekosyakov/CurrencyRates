@@ -11,7 +11,7 @@ import Foundation
 extension NavigationRouter {
     func showErrorPlaceholder(data: PlaceholderData) {
         do {
-            if let vc = presentedController() {
+            if let vc = activeController(), vc.presentedViewController == nil {
                 let module = try ErrorPlaceholderRouter.createModule()
                 module.input.errorText = data.text
                 module.input.iconName = data.icon

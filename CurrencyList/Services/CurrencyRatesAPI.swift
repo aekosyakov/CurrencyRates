@@ -31,7 +31,9 @@ public protocol RatesResponse {
     var baseID: String { get }
     var currencies:[String] { get }
     
+    
     init(json:[String : Any])
+    func isValid() -> Bool
 }
 
 

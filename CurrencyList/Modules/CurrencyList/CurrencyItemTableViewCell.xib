@@ -8,6 +8,12 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="AvenirNext.ttc">
+            <string>AvenirNext-Bold</string>
+            <string>AvenirNext-Medium</string>
+        </array>
+    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -18,39 +24,62 @@
                 <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W80-ym-RHr">
-                        <rect key="frame" x="20" y="11.5" width="42" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W80-ym-RHr">
+                        <rect key="frame" x="20" y="11.5" width="0.0" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="5fq-1p-vzk"/>
-                            <constraint firstAttribute="width" constant="42" id="5t2-3i-2So"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="19"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="x9L-Ls-E2g">
-                        <rect key="frame" x="262" y="6" width="97" height="30"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kl3-AI-B5B">
+                        <rect key="frame" x="184" y="-1" width="191" height="44"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="x9L-Ls-E2g">
+                                <rect key="frame" x="146" y="2" width="25" height="41"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="25" id="p2o-E5-bXw"/>
+                                    <constraint firstAttribute="height" constant="41" id="vzO-Qj-FfC"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="23"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uIC-fh-TeF">
+                                <rect key="frame" x="158" y="42" width="13" height="1"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="lightTextColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="Kfe-3E-bpm"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="30" id="Ls6-hW-Bt0"/>
-                            <constraint firstAttribute="width" constant="97" id="wZ0-Yr-aK0"/>
+                            <constraint firstAttribute="width" constant="191" id="1S4-4O-VKw"/>
+                            <constraint firstItem="uIC-fh-TeF" firstAttribute="leading" secondItem="x9L-Ls-E2g" secondAttribute="leading" constant="12" id="2py-rQ-LSD"/>
+                            <constraint firstItem="x9L-Ls-E2g" firstAttribute="centerY" secondItem="kl3-AI-B5B" secondAttribute="centerY" id="HDA-P5-12h"/>
+                            <constraint firstItem="uIC-fh-TeF" firstAttribute="trailing" secondItem="x9L-Ls-E2g" secondAttribute="trailing" id="IV8-O3-dNl"/>
+                            <constraint firstItem="x9L-Ls-E2g" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="kl3-AI-B5B" secondAttribute="leading" constant="10" id="TR1-ea-Te6"/>
+                            <constraint firstAttribute="trailing" secondItem="x9L-Ls-E2g" secondAttribute="trailing" constant="20" id="Wwd-F7-5BU"/>
+                            <constraint firstItem="uIC-fh-TeF" firstAttribute="bottom" secondItem="x9L-Ls-E2g" secondAttribute="bottom" id="aeL-Dt-lOB"/>
                         </constraints>
-                        <nil key="textColor"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                        <textInputTraits key="textInputTraits"/>
-                    </textField>
+                    </view>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="trailing" secondItem="kl3-AI-B5B" secondAttribute="trailing" id="5iu-nt-XmG"/>
                     <constraint firstItem="W80-ym-RHr" firstAttribute="leading" secondItem="APl-kZ-wZ8" secondAttribute="leading" constant="20" id="78O-WN-1A9"/>
-                    <constraint firstAttribute="trailing" secondItem="x9L-Ls-E2g" secondAttribute="trailing" constant="16" id="Esh-rK-ngQ"/>
-                    <constraint firstItem="x9L-Ls-E2g" firstAttribute="centerY" secondItem="APl-kZ-wZ8" secondAttribute="centerY" id="IW2-2U-5Te"/>
+                    <constraint firstItem="kl3-AI-B5B" firstAttribute="top" secondItem="APl-kZ-wZ8" secondAttribute="top" constant="-1" id="C5A-0s-D8A"/>
                     <constraint firstItem="W80-ym-RHr" firstAttribute="centerY" secondItem="APl-kZ-wZ8" secondAttribute="centerY" id="hvt-oM-jTb"/>
+                    <constraint firstAttribute="bottom" secondItem="kl3-AI-B5B" secondAttribute="bottom" constant="0.5" id="y5M-de-NiT"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="countSeparatorView" destination="uIC-fh-TeF" id="pyS-Kz-Eot"/>
                 <outlet property="textField" destination="x9L-Ls-E2g" id="NFe-et-Y3D"/>
                 <outlet property="titleLabel" destination="W80-ym-RHr" id="yfD-UH-efA"/>
             </connections>
-            <point key="canvasLocation" x="86" y="-58"/>
+            <point key="canvasLocation" x="85.5" y="-58"/>
         </tableViewCell>
     </objects>
 </document>

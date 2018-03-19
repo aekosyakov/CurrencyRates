@@ -32,24 +32,12 @@ final class CurrencyListViewController: UIViewController, CurrencyListViewProtoc
     func setupView() {
         view.layoutIfNeeded()
         tableView.delegate = self
-        tableView.keyboardDismissMode = .onDrag
+        //tableView.keyboardDismissMode = .onDrag
         tableView.showsVerticalScrollIndicator = false
         tableView.register(UINib.init(nibName: CellConsts.CurrencyCellID, bundle: nil), forCellReuseIdentifier: CellConsts.CurrencyCellID)
         if #available(iOS 11.0, *) {
             tableView.contentInsetAdjustmentBehavior = .never
         }
-        
-        
-//       
-//        DispatchQueue.main.async {
-//            self.networkActivityView?.scalePulseAnimation(0.2)
-//        }
-        
-//        Repeater.every(.seconds(0.3)) { _ in
-//            DispatchQueue.main.async {
-//                self.networkActivityView?.scalePulseAnimation(0.2)
-//            }
-//        }
     }
     
     func setNetworkActivityViewColor(_ color: UIColor) {
@@ -72,7 +60,6 @@ extension CurrencyListViewController: UITableViewDataSource {
             let viewModel = CurrencyItemViewModel(item: item)
             cell.reload(with: viewModel)
         }
-        
         return cell
     }
     
@@ -91,6 +78,7 @@ extension CurrencyListViewController: UITableViewDataSource {
 extension CurrencyListViewController: UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         deselectVisibleRows()
+        tableView?.endEditing(true)
     }
 }
 
@@ -142,6 +130,10 @@ extension CurrencyListViewController {
     func insertNewRows() {
         var indexPathsToInsert:[IndexPath] = []
         let numberOfItems = presenter.numberOfItems()
+        if numberOfItems == 0 {
+            tableView.reloadData()
+            return
+        }
         let countToInsert = numberOfItems - 1
         for i in  0...countToInsert {
             indexPathsToInsert.append(IndexPath(row:i, section:0))

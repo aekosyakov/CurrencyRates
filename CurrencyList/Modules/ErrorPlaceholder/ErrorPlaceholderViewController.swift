@@ -12,6 +12,7 @@ import UIKit
 final class ErrorPlaceholderViewController: UIViewController, ErrorPlaceholderViewProtocol {
     @IBOutlet weak var errorLabel:UILabel?
     @IBOutlet weak var imageView:UIImageView?
+    @IBOutlet weak var imageContainerView:UIView?
     
 	var presenter: ErrorPlaceholderViewPresenter!
 
@@ -26,8 +27,14 @@ final class ErrorPlaceholderViewController: UIViewController, ErrorPlaceholderVi
         errorLabel?.text = text
     }
     
-    func setIcon(_ image: UIImage) {
+    func setIcon(_ image: UIImage?) {
+        guard let image = image else {
+            imageView?.image = nil
+            imageContainerView?.isHidden = true
+            return
+        }
         imageView?.image = image
+        imageContainerView?.isHidden = false
     }
 
 }

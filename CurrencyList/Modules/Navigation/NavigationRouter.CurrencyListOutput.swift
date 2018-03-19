@@ -12,7 +12,7 @@ extension NavigationRouter : CurrencyListOutput {
     func showErrorPlaceholder(error: CurrencyError, input: CurrencyListInput) {
         switch error {
         case .connectionLost:
-            showErrorPlaceholder(data: ("Connection lost", nil))
+            showErrorPlaceholder(data: ("Connection lost", "connectionLost"))
         case .got(let error):
             showErrorPlaceholder(data: (error.localizedDescription, nil))
         case .requestFailed:

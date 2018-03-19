@@ -87,15 +87,17 @@ extension CurrencyListPresenter: CurrencyListViewPresenter {
             self.showLoader()
         }
         interactor.updateCurrencyItems { error in
-            self.hideLoader()
-            
-            if let error = error {
-                self.show(error: error)
-                return
+            DispatchQueue.main.async {
+                self.hideLoader()
+                
+                if let error = error {
+                    self.show(error: error)
+                    return
+                }
+                
+                self.hideError()
+                self.reloadRows()
             }
-            
-            self.hideError()
-            self.reloadRows()
         }
     }
 

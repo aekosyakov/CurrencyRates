@@ -42,10 +42,15 @@ final class CurrencyListInteractor: CurrencyListInteractorProtocol {
         var newItem = CurrencyItem()
         newItem.identifier = itemID
         newItem.rate = itemRate
-        
         newItem.selected = (index == 0) && editMode
         
+        guard case newItem.selected = false else {
+            newItem.count = counts[itemID] ?? 0
+            return newItem
+        }
+        
         let currentBaseID = editMode ? currencies.first : self.baseID
+        let isBaseItem = itemID == currentBaseID
         let editCount = counts[currentBaseID!] ?? 0
         let editRate = rates[currentBaseID!] ?? 0
         
@@ -56,17 +61,9 @@ final class CurrencyListInteractor: CurrencyListInteractorProtocol {
             return newItem
         }
         
-        let baseIDCount = Float(editCount/editRate)        
-        var newCount:Float = 0
-        if index == 0 {
-            newCount = counts[itemID] ?? 0
-        } else {
-            if itemID == currentBaseID {
-                newCount = baseIDCount
-            } else {
-                newCount = Float(baseIDCount*itemRate)
-            }
-        }
+        let baseIDCount = Float(editCount/editRate)
+        let newCount:Float = isBaseItem ? baseIDCount : Float(baseIDCount*itemRate)
+    
 
         counts[itemID] = newCount
         newItem.count = counts[itemID] ?? 0
@@ -117,18 +114,26 @@ extension CurrencyListInteractor {
         
         let initialResponse = rates.count == 0
         
-        rates = data.rates
-        baseID = data.baseID
+        guard data.isValid() else {
+            completion()
+            return
+        }
         
-        Array(rates.keys).forEach({ (string) in
-            if currencies.contains(string) == false {
-                currencies.append(string)
-            }
-        })
+        baseID = data.baseID
+        rates = data.rates
+
+        if rates.count != currencies.count - 1 {
+            Array(rates.keys).forEach({ (string) in
+                if currencies.contains(string) == false {
+                    currencies.append(string)
+                }
+            })
+        }
         
         if counts.keys.contains(baseID) == false {
             counts[baseID] = 100
         }
+        
         
         if rates.keys.contains(baseID) == false {
             rates[baseID] = 1
