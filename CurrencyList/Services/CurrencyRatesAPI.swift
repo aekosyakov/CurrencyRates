@@ -28,7 +28,7 @@ public enum CurrencyIDs {
 
 public protocol RatesResponse {
     var rates:[String: Float] { get }
-    var baseID: String { get }
+    var baseID: String? { get }
     var currencies:[String] { get }
     
     

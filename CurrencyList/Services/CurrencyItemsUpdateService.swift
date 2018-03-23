@@ -18,8 +18,8 @@ class CurrencyItemsUpdateService: CurrencyUpdateAPI {
 
     func startUpdateRates(every sec:Float, completion: @escaping ResultCompletion) {
         guard let timer = timer else {
-            self.timer = Repeater.every(.seconds(Double(sec))) { _ in
-                self.loadRates(completion)
+            self.timer = Repeater.every(.seconds(Double(sec))) { [weak self] _ in
+                self?.loadRates(completion)
             }
             return
         }

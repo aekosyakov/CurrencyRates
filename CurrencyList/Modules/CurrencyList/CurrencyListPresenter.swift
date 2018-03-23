@@ -43,7 +43,7 @@ extension CurrencyListPresenter: CurrencyListViewPresenter {
     
     //MARK: - Public API
     func item(at indexPath:IndexPath) -> Currency? {
-        return interactor.currencyItem(at: indexPath.row, editMode: editMode)
+        return interactor.itemsFabric.item(at: indexPath.row, editMode: editMode)
     }
     
     func selectItem(at indexPath: IndexPath) {
@@ -56,7 +56,7 @@ extension CurrencyListPresenter: CurrencyListViewPresenter {
             return
         }
         
-        interactor.addCurrencyItemToTop(from: index)
+        interactor.itemsFabric.pushItemToTop(from: index)
         
         DispatchQueue.main.async {
             self.view.moveRowToTop(from: indexPath)
@@ -70,12 +70,12 @@ extension CurrencyListPresenter: CurrencyListViewPresenter {
     }
     
     func numberOfItems() -> Int {
-        return interactor.itemsCount
+        return interactor.itemsFabric.itemsCount()
     }
     
     func cellTextFieldDidStartEditing(_ textField: UITextField) {
         if let text = textField.text {
-            interactor.editSelectedItemCount(Float(text) ?? 0)
+            interactor.itemsFabric.setItemCount(at: 0, count: Float(text) ?? 0)
             reloadRows()
         }
     }
@@ -83,7 +83,7 @@ extension CurrencyListPresenter: CurrencyListViewPresenter {
     
     //MARK: - Private API
     private func startUpdates() {
-        if self.interactor.itemsCount == 0 {
+        if self.interactor.itemsFabric.itemsCount() == 0 {
             self.showLoader()
         }
         interactor.updateCurrencyItems { error in

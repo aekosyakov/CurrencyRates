@@ -38,12 +38,11 @@ typealias CurrencyListPresenterProtocol = CurrencyListViewPresenter & CurrencyLi
 // MARK: - Interactor
 
 protocol CurrencyListInteractorProtocol: class {
-    var itemsCount:Int { get }
-    func currencyItem(at index:Int, editMode: Bool) -> Currency?
-    func editSelectedItemCount(_ count: Float)
+    var itemsFabric:CurrencyItemsFabric { get }
+
     func updateCurrencyItems(_ completion:@escaping ((CurrencyError?)-> ()))
-    func addCurrencyItemToTop(from index: Int)
     func stopUpdatingCurrencyItems()
+    
 }
 
 // MARK: - View

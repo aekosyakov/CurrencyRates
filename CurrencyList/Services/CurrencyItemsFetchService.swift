@@ -18,7 +18,7 @@ struct CurrencyItem: Currency {
 
 struct CurrencyResponse:RatesResponse {
     var rates:[String: Float] = [:]
-    var baseID: String = "EUR"
+    var baseID: String?
     var currencies:[String] = []
     
     init(json: [String:Any]) {
@@ -31,7 +31,10 @@ struct CurrencyResponse:RatesResponse {
     }
     
     func isValid() -> Bool {
-        return rates.count > 0 && baseID.count > 0
+        guard let baseID = baseID, baseID.count > 0, rates.count > 0 else {
+            return false
+        }
+        return true
     }
 }
 
