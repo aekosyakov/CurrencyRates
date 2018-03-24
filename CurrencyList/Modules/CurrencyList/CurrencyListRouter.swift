@@ -17,7 +17,9 @@ final class CurrencyListRouter: CurrencyListWireframeProtocol {
         let view = CurrencyListViewController(nibName: nil, bundle: nil)
         let fetchService = CurrencyItemsFetchService()
         let updateService = CurrencyItemsUpdateService(fetchService: fetchService)
-        let itemsFabric = CurrencyItemsFabric()
+        
+        let storage = CurrencyStorage()
+        let itemsFabric = CurrencyItemsFabric(storage: storage)
         let interactor = CurrencyListInteractor(updateService: updateService, itemsFabric: itemsFabric)
         let router = CurrencyListRouter()
         let presenter = CurrencyListPresenter(view: view, interactor: interactor, router: router)

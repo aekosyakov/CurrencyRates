@@ -75,6 +75,7 @@ extension CurrencyListPresenter: CurrencyListViewPresenter {
     
     func cellTextFieldDidStartEditing(_ textField: UITextField) {
         if let text = textField.text {
+        
             interactor.itemsFabric.setItemCount(at: 0, count: Float(text) ?? 0)
             reloadRows()
         }
@@ -86,17 +87,17 @@ extension CurrencyListPresenter: CurrencyListViewPresenter {
         if self.interactor.itemsFabric.itemsCount() == 0 {
             self.showLoader()
         }
-        interactor.updateCurrencyItems { error in
+        interactor.updateCurrencyItems { [weak self] error in
             DispatchQueue.main.async {
-                self.hideLoader()
+                self?.hideLoader()
                 
                 if let error = error {
-                    self.show(error: error)
+                    self?.show(error: error)
                     return
                 }
                 
-                self.hideError()
-                self.reloadRows()
+                self?.hideError()
+                self?.reloadRows()
             }
         }
     }

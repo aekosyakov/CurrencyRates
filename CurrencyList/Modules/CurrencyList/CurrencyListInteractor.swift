@@ -54,16 +54,16 @@ extension CurrencyListInteractor {
 extension CurrencyListInteractor {
     func handleResponse(_ data:RatesResponse, completion:@escaping (()->())) {
         
-        let initialResponse = itemsFabric.itemsCount() == 0
+        let initialResponse = itemsFabric.storage.isEmpty
         
-        itemsFabric.updateResponseData(data: data) { [weak self] in
-            
+        itemsFabric.storage.update(with: data) {
             completion()
             
             if (initialResponse) {
-                self?.presenter?.hideLoader()
+                self.presenter?.hideLoader()
             }
         }
+
         
     }
 }

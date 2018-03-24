@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4224190D20668E5E00A09EA9 /* CurrencyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4224190C20668E5E00A09EA9 /* CurrencyStorage.swift */; };
 		4228A43E2043637E0017F73F /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228A4372043637E0017F73F /* UIView+Utils.swift */; };
 		4228A44E204889E80017F73F /* CurrencyItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228A44D204889E80017F73F /* CurrencyItemTableViewCell.swift */; };
 		425BBF91205D5FB100113D1D /* CurrencyItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425BBF90205D5FB100113D1D /* CurrencyItemViewModel.swift */; };
@@ -242,6 +243,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4224190C20668E5E00A09EA9 /* CurrencyStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyStorage.swift; sourceTree = "<group>"; };
 		4228A4372043637E0017F73F /* UIView+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
 		4228A44D204889E80017F73F /* CurrencyItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyItemTableViewCell.swift; sourceTree = "<group>"; };
 		425BBF90205D5FB100113D1D /* CurrencyItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyItemViewModel.swift; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 				42720AAB203EFD4800D8FE9C /* CurrencyListViewController.swift */,
 				42720AAC203EFD4800D8FE9C /* CurrencyListProtocols.swift */,
 				42720AAD203EFD4800D8FE9C /* CurrencyListInteractor.swift */,
+				4224190C20668E5E00A09EA9 /* CurrencyStorage.swift */,
 				42DD0D0020658B7D00113CBA /* CurrencyItemsFabric.swift */,
 				425BBFE8205EF25300113D1D /* CurrencyListInteractorTests.swift */,
 				42720AAE203EFD4800D8FE9C /* CurrencyListViewController.xib */,
@@ -793,6 +796,7 @@
 				42720AC1203F056200D8FE9C /* NavigationViewController.swift in Sources */,
 				42720AB3203EFD4800D8FE9C /* CurrencyListInteractor.swift in Sources */,
 				42720AAF203EFD4800D8FE9C /* CurrencyListPresenter.swift in Sources */,
+				4224190D20668E5E00A09EA9 /* CurrencyStorage.swift in Sources */,
 				42720AA8203EFCFC00D8FE9C /* ViperModule.swift in Sources */,
 				42720AC2203F056200D8FE9C /* NavigationProtocols.swift in Sources */,
 				42720AB0203EFD4800D8FE9C /* CurrencyListRouter.swift in Sources */,
